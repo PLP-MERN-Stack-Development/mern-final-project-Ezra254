@@ -2,12 +2,12 @@ services:
   - type: web
     name: vitaltrack-api
     env: node
-    rootDir: .
+    rootDir: backend
+    runtime: node
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run start
     autoDeploy: true
-    runtime: node
     envVars:
       - key: NODE_ENV
         value: production
