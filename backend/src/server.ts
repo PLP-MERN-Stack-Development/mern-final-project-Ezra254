@@ -18,12 +18,49 @@ const io = new Server(server, {
 app.set('io', io);
 registerRealtime(io);
 
-const start = async () => {
-  await connectDatabase();
+// Handle uncaught errors
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection', { promise, reason });
+  process.exit(1);
+});
 
-  server.listen(env.port, () => {
-    logger.info(`🚀 Server listening on port ${env.port}`);
-  });
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught Exception', error);
+  process.exit(1);
+});
+
+const start = async () => {
+  try {
+    await connectDatabase();
+
+    const host = '0.0.0.0'; // Bind to all interfaces for Render
+    server.listen(env.port, host, () => {
+      logger.info(`🚀 Server listening on ${host}:${env.port}`);
+    });
+
+    // Handle server errors
+    server.on('error', (error: NodeJS.ErrnoException) => {
+      if (error.syscall !== 'listen') {
+        throw error;
+      }
+      const bind = typeof env.port === 'string' ? `Pipe ${env.port}` : `Port ${env.port}`;
+      switch (error.code) {
+        case 'EACCES':
+          logger.error(`${bind} requires elevated privileges`);
+          process.exit(1);
+          break;
+        case 'EADDRINUSE':
+          logger.error(`${bind} is already in use`);
+          process.exit(1);
+          break;
+        default:
+          throw error;
+      }
+    });
+  } catch (error) {
+    logger.error('Failed to start server:', error);
+    process.exit(1);
+  }
 };
 
 void start();
