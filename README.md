@@ -116,6 +116,28 @@ With this flow you can keep goals, workouts, and plans in sync—any updates mad
 - Deployment targets: Render (API) + Vercel (web); CI/CD pipeline draft coming soon
 - Upcoming: connect dashboard to live APIs, add TanStack Query hooks, integrate charts with backend metrics, automate deployments
 
+### Cloud Deployment Guide
+
+| Target | Config file | Build command | Start / Output |
+| ------ | ----------- | ------------- | -------------- |
+| Render (backend) | `backend/render.yaml` | `npm run build` (inside `backend/`) | `npm run start` |
+| Vercel (frontend) | `frontend/vercel.json` | `npm run build` (inside `frontend/`) | Static export in `frontend/dist` |
+
+1. **Backend on Render**
+   - Create a new Web Service using the repo and pick the `render.yaml` blueprint.
+   - Render will `cd backend`, install dependencies, run `npm run build`, then launch `npm run start`.
+   - Provide the secrets listed in `render.yaml` (Mongo URI, JWT secrets, etc.). Set `CLIENT_URL` to your deployed Vercel domain and, once known, set `COOKIE_DOMAIN` accordingly.
+   - Enable autoscaling/cron as needed; `LOG_LEVEL=info` keeps logs concise in production.
+
+2. **Frontend on Vercel**
+   - Import the repo in Vercel and keep the root as default; the `@vercel/static-build` entry in `vercel.json` installs/builds from `frontend/`.
+   - Set the environment variables shown in `vercel.json` so the client points at the Render API. When the Render backend URL is finalized, update `VITE_API_URL` and `VITE_SOCKET_URL`.
+   - Vercel runs `npm install` and `npm run build` automatically; the emitted files in `frontend/dist` are served globally. Rewrites ensure SPA routes resolve to `/frontend/dist/index.html`.
+
+3. **Local parity**
+   - Keep `VITE_DEMO_MODE=true` for local previews without an API. In production (Vercel), set it to `false` so the client uses live endpoints.
+   - Always run `npm run build` in both `backend/` and `frontend/` before deploying to catch TypeScript or lint regressions the hosts would otherwise fail on.
+
 ## Assignment Reference
 For detailed grading criteria, deliverables, and presentation expectations, consult `Week8-Assignment.md`.
 

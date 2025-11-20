@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: vitaltrack-api
+    env: node
+    rootDir: .
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    runtime: node
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        value: https://vitaltrack-web.vercel.app
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: JWT_ACCESS_TTL
+        value: 15m
+      - key: JWT_REFRESH_TTL
+        value: 7d
+      - key: COOKIE_DOMAIN
+        value: vitaltrack-web.vercel.app
+      - key: LOG_LEVEL
+        value: info
+
