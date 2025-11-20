@@ -20,17 +20,40 @@ VitalTrack is a full-stack MERN capstone project focused on holistic health trac
 ## Repository Structure
 ```
 mern-final-project-Ezra254
-├─ backend            # Express API (TypeScript)
+├─ backend
 │  ├─ src
-│  │  ├─ config
-│  │  ├─ controllers
-│  │  ├─ middleware
-│  │  ├─ models
-│  │  ├─ routes
-│  │  └─ utils
-│  └─ tests
-├─ docs               # Planning artifacts
+│  │  ├─ app.ts
+│  │  ├─ config/
+│  │  ├─ controllers/
+│  │  ├─ middleware/
+│  │  ├─ models/
+│  │  ├─ realtime/
+│  │  ├─ routes/
+│  │  ├─ services/
+│  │  ├─ utils/
+│  │  └─ validators/
+│  ├─ tests/                  # Jest + Supertest suites (TS & JS)
+│  ├─ dist/                   # Transpiled JS output (tsc)
+│  ├─ package.json
+│  └─ tsconfig.json
+├─ frontend
+│  ├─ public/
+│  ├─ src
+│  │  ├─ components/
+│  │  ├─ hooks/
+│  │  ├─ layouts/
+│  │  ├─ lib/
+│  │  ├─ mocks/               # Demo-mode data + adapters
+│  │  ├─ pages/
+│  │  ├─ routes/
+│  │  ├─ store/
+│  │  ├─ types/
+│  │  └─ main.tsx + assets
+│  ├─ package.json
+│  └─ tsconfig.*.json
+├─ docs/                      # Planning artifacts & design notes
 │  └─ project-plan.md
+├─ README.md
 └─ Week8-Assignment.md
 ```
 
