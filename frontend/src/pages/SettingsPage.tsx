@@ -371,7 +371,14 @@ const SettingsPage = () => {
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <p className="text-xs uppercase tracking-wide text-primary-500">Reminder</p>
         <p className="mt-1 text-sm text-slate-500">
-          Signed in as <span className="font-semibold text-slate-900">{user?.email ?? 'guest@vitaltrack.dev'}</span>. Goal updates follow your profile and instantly refresh any widgets (dashboard cards, analytics, realtime feed).
+          {user?.email ? (
+            <>
+              Signed in as <span className="font-semibold text-slate-900">{user.email}</span>. Goal updates follow your
+              profile and instantly refresh any widgets (dashboard cards, analytics, realtime feed).
+            </>
+          ) : (
+            'You are not currently signed in.'
+          )}
         </p>
       </div>
     </section>

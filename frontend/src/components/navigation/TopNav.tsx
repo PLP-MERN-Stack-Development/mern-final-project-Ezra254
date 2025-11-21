@@ -42,7 +42,7 @@ const TopNav = () => {
               {user?.firstName?.[0] ?? 'A'}
             </div>
             <div className="hidden text-sm text-slate-500 sm:block">
-              <p className="font-medium text-slate-900">{user?.email ?? 'guest@vitaltrack.dev'}</p>
+              {user?.email && <p className="font-medium text-slate-900">{user.email}</p>}
               <p>Goal: {user?.preferences?.weeklyGoal ?? 4} workouts/week</p>
             </div>
           </div>

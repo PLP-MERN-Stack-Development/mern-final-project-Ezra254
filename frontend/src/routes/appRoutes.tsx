@@ -8,18 +8,24 @@ import SettingsPage from '../pages/SettingsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import ActivityPage from '../pages/ActivityPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
+import RequireAuth from '../components/auth/RequireAuth';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <AppLayout />,
+    element: <RequireAuth />,
     children: [
-      { index: true, element: <DashboardPage /> },
-      { path: 'dashboard', element: <DashboardPage /> },
-      { path: 'activity', element: <ActivityPage /> },
-      { path: 'analytics', element: <AnalyticsPage /> },
-      { path: 'settings', element: <SettingsPage /> },
-      { path: '*', element: <NotFoundPage /> },
+      {
+        path: '/',
+        element: <AppLayout />,
+        children: [
+          { index: true, element: <DashboardPage /> },
+          { path: 'dashboard', element: <DashboardPage /> },
+          { path: 'activity', element: <ActivityPage /> },
+          { path: 'analytics', element: <AnalyticsPage /> },
+          { path: 'settings', element: <SettingsPage /> },
+          { path: '*', element: <NotFoundPage /> },
+        ],
+      },
     ],
   },
   {
