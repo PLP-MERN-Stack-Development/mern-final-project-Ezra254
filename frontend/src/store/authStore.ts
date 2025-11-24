@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { api } from '../lib/api';
-import { demoProfile } from '../mocks/demoData';
 import type { AuthResponse, User } from '../types';
 
 interface AuthState {
@@ -21,8 +20,6 @@ interface AuthState {
   initialize: () => Promise<void>;
 }
 
-const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
-
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isLoading: false,
@@ -32,11 +29,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   login: async (payload) => {
     set({ isLoading: true, error: null });
     try {
-      if (isDemoMode) {
-        demoProfile.email = payload.email || demoProfile.email;
-        set({ user: { ...demoProfile }, isLoading: false, hasHydrated: true });
-        return;
-      }
       const { data } = await api.post<AuthResponse>('/auth/login', payload);
       set({ user: data.user, isLoading: false, hasHydrated: true });
     } catch (error) {
@@ -47,13 +39,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (payload) => {
     set({ isLoading: true, error: null });
     try {
-      if (isDemoMode) {
-        demoProfile.firstName = payload.firstName;
-        demoProfile.lastName = payload.lastName;
-        demoProfile.email = payload.email;
-        set({ user: { ...demoProfile }, isLoading: false, hasHydrated: true });
-        return;
-      }
       const { data } = await api.post<AuthResponse>('/auth/register', payload);
       set({ user: data.user, isLoading: false, hasHydrated: true });
     } catch (error) {
@@ -62,10 +47,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   logout: async () => {
-    if (!isDemoMode) {
+    try {
       await api.post('/auth/logout');
+    } catch {
+      // ignore logout errors, still clear local state
     }
-    set({ user: null });
+    set({ user: null, hasHydrated: true });
   },
   fetchMe: async () => {
     const { hasHydrated } = get();
@@ -73,12 +60,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ isHydrating: true });
     }
     try {
-      if (isDemoMode) {
-        set({ user: { ...demoProfile } });
-      } else {
-        const { data } = await api.get<{ user: User }>('/auth/me');
-        set({ user: data.user });
-      }
+      const { data } = await api.get<{ user: User }>('/auth/me');
+      set({ user: data.user });
     } catch {
       set({ user: null });
     } finally {

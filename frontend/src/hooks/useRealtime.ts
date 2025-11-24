@@ -4,7 +4,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 const apiBase = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
 const realtimeUrl = import.meta.env.VITE_SOCKET_URL ?? apiBase.replace(/\/api$/, '');
-const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
 
 let socket: Socket | null = null;
 
@@ -21,9 +20,6 @@ export const useRealtimeSync = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (isDemoMode) {
-      return undefined;
-    }
     const client = getSocket();
     const invalidateGoals = () => {
       queryClient.invalidateQueries({ queryKey: ['goals'] });
